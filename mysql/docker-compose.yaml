@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7  # 也可以使用 mysql:5.7 或其他版本
+    container_name: mysql_server
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword  # 设置root用户密码
+      MYSQL_USER: user                # 创建自定义用户
+      MYSQL_PASSWORD: mypassword        # 自定义用户的密码
+    ports:
+      - "3306:3306"  # 主机端口:容器端口
+    volumes:
+      - mysql_data:/var/lib/mysql  # 持久化数据
+      - ./mysql-init:/docker-entrypoint-initdb.d  # 初始化SQL脚本目录
+    networks:
+      - mysql_network
+    restart: unless-stopped  # 自动重启策略
+
+volumes:
+  mysql_data:  # 命名卷，用于持久化MySQL数据
+
+networks:
+  mysql_network:
+    driver: bridge
